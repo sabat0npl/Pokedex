@@ -41,6 +41,27 @@ pokemonList = [
         type: "Fire"
     }
 ]
-document.write(JSON.stringify(pokemonList));
+// document.write(JSON.stringify(pokemonList));
+// document.write(`
+//     <table>
+//         <thead>
+//             <tr><th>Name</th><th>Height</th><th>Weight</th><th>Category</th><th>Abilities</th><th>Type</th></tr>
+//         </thead>
+//         `);
+// for (let i=0; i<pokemonList.length; i++){
 
+//     document.write("<tr>"+"<td>"+pokemonList[i].name+"</td>"+"<td>"+pokemonList[i].weight+"</td>"+"<td>"+pokemonList[i].height+ "</td>"+"<td>"+pokemonList[i].category+"</td>"+"<td>"+pokemonList[i].abilities+"</td>"+"<td>"+pokemonList[i].type+"</td></tr>");
+// }
+// document.write("</table");
 
+document.write(`
+    <table>
+        <thead>
+            <tr><th>Name</th><th>Height</th><th>Weight</th><th>Category</th><th>Abilities</th><th>Type</th></tr>
+        </thead>
+        `);
+for (let i=0; i<pokemonList.length; i++){
+
+    document.write(`<tr><td>${pokemonList[i].name}</td><td>${pokemonList[i].weight}</td><td>${pokemonList[i].height}</td><td>${pokemonList[i].category}</td><td>${pokemonList[i].abilities}</td><td>${pokemonList[i].type}</td></tr>`);
+}
+document.write("</table>");

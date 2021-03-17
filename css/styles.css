@@ -1,0 +1,17 @@
+table {
+    margin: auto;
+    width: 75%;
+}
+
+thead {
+    background-color: rgb(125, 219, 62);
+}
+
+tr:hover {
+    background-color: lightgrey;
+}
+
+td,th{
+    padding: 10px;
+    text-align: left;
+}
