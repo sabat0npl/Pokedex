@@ -2,7 +2,7 @@ let pokemonList = [];
 pokemonList = [
     {
         name: "Bulbasaur",
-        height: "2'04\"",
+        height: 71.12,
         weight: "15.2 lbs",
         category: "Seed",
         abilities: "Overgrow",
@@ -10,7 +10,7 @@ pokemonList = [
     },
     {
         name: "Ivysaur",
-        height: "3'03\"",
+        height: 99.06,
         weight: "28.7 lbs",
         category: "Seed",
         abilities: "Overgrow",
@@ -18,50 +18,40 @@ pokemonList = [
     },
     {
         name: "Venusaur",
-        height: "6'07\"",
+        height: 200.66,
         weight: "220.5 lbs",
         category: "Seed",
         abilities: "Overgrow",
         type: ["Grass", "Poison"]
     },
     {
-        name: "Bulbasaur",
-        height: "2'04\"",
-        weight: "15.2 lbs",
-        category: "Seed",
-        abilities: "Overgrow",
-        type: ["Grass", "Poison"]
-    },
-    {
         name: "Charmander",
-        height: "2'00\"",
+        height: 60.96,
         weight: "18.7 lbs",
         category: "Lizard",
         abilities: "Blaze",
         type: "Fire"
     }
-]
-// document.write(JSON.stringify(pokemonList));
-// document.write(`
-//     <table>
-//         <thead>
-//             <tr><th>Name</th><th>Height</th><th>Weight</th><th>Category</th><th>Abilities</th><th>Type</th></tr>
-//         </thead>
-//         `);
-// for (let i=0; i<pokemonList.length; i++){
+]; // declaration of the table with pokemon objects
 
-//     document.write("<tr>"+"<td>"+pokemonList[i].name+"</td>"+"<td>"+pokemonList[i].weight+"</td>"+"<td>"+pokemonList[i].height+ "</td>"+"<td>"+pokemonList[i].category+"</td>"+"<td>"+pokemonList[i].abilities+"</td>"+"<td>"+pokemonList[i].type+"</td></tr>");
-// }
-// document.write("</table");
 
 document.write(`
     <table>
         <thead>
-            <tr><th>Name</th><th>Height</th><th>Weight</th><th>Category</th><th>Abilities</th><th>Type</th></tr>
+            <tr><th>Name</th><th>Weight</th><th>Height</th><th>Category</th><th>Abilities</th><th>Type</th></tr>
         </thead>
         `);
 for (let i=0; i<pokemonList.length; i++){
 
-    document.write(`<tr><td>${pokemonList[i].name}</td><td>${pokemonList[i].weight}</td><td>${pokemonList[i].height}</td><td>${pokemonList[i].category}</td><td>${pokemonList[i].abilities}</td><td>${pokemonList[i].type}</td></tr>`);
+    document.write(`<tr><td>${pokemonList[i].name}</td><td>${pokemonList[i].weight}</td><td>${Math.round(pokemonList[i].height)}</td><td>${pokemonList[i].category}</td><td>${pokemonList[i].abilities}</td><td>${pokemonList[i].type}</td></tr>`);
 }
-document.write("</table>");
+document.write("</table>"); // displaying the table with pokemons using for loop
+
+let huge = 0; // initiating a variable used to find the biggest pokemon
+
+for (i=0; i<pokemonList.length; i++){
+    pokemonList[i].height > pokemonList[huge].height ? huge=i : huge=huge;
+} // condition that will find the bigges pokemon
+
+document.write(`<h3>The ${pokemonList[huge].name} is huge!!!</h3>`); // printing the name of the biggest pokemon
+
