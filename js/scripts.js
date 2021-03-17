@@ -41,3 +41,6 @@ pokemonList = [
         type: "Fire"
     }
 ]
+document.write(JSON.stringify(pokemonList));
+
+
