@@ -41,10 +41,11 @@ document.write(`
             <tr><th>Name</th><th>Weight</th><th>Height</th><th>Category</th><th>Abilities</th><th>Type</th></tr>
         </thead>
         `);
-for (let i=0; i<pokemonList.length; i++){
 
-    document.write(`<tr><td>${pokemonList[i].name}</td><td>${pokemonList[i].weight}</td><td>${Math.round(pokemonList[i].height)}</td><td>${pokemonList[i].category}</td><td>${pokemonList[i].abilities}</td><td>${pokemonList[i].type}</td></tr>`);
-}
+pokemonList.forEach(function (pokemon){
+    document.write(`<tr><td>${pokemon.name}</td><td>${pokemon.weight}</td><td>${Math.round(pokemon.height)}</td><td>${pokemon.category}</td><td>${pokemon.abilities}</td><td>${pokemon.type}</td></tr>`);
+})
+
 document.write("</table>"); // displaying the table with pokemons using for loop
 
 let huge = 0; // initiating a variable used to find the biggest pokemon
@@ -54,4 +55,3 @@ for (i=0; i<pokemonList.length; i++){
 } // condition that will find the bigges pokemon
 
 document.write(`<h3>The ${pokemonList[huge].name} is huge!!!</h3>`); // printing the name of the biggest pokemon
-
