@@ -1,6 +1,5 @@
 let pokemonRepository = (function () {
-    let pokemonList = [
-        {
+    let pokemonList = [{
             name: "Bulbasaur",
             height: 70.12,
             weight: "15.2 lbs",
@@ -38,24 +37,59 @@ let pokemonRepository = (function () {
         return pokemonList;
     }
 
-    function add(item){
-        pokemonList.push(item);
+    function addv(item) {
+        let keysValidation = [];
+        Object.keys(pokemonList[0]).forEach(function (key, i) {
+            return keysValidation.push(key === Object.keys(item)[i])
+        });
+        return typeof (item) === typeof ({}) && keysValidation.indexOf(false) === -1 ? true : false;
     }
 
-    function biggestPokemon(){
+    function add(item) {
+        addv(item) ? pokemonList.push(item) : console.log("Wrong data");
+    }
+
+    function biggestPokemon() {
         let huge = 0; // initiating a variable used to find the biggest pokemon
-        pokemonList.forEach(function(pokemon, i){
-        pokemonList[huge].height < pokemon.height ? huge = i : huge = huge; // I have corrected this logic, it was wasn't working good
-    }) 
+        pokemonList.forEach(function (pokemon, i) {
+            pokemonList[huge].height < pokemon.height ? huge = i : huge = huge; // I have corrected this logic, it was wasn't working good
+        })
         return pokemonList[huge].name
     } // function to find the bigges Pokemon
+
+    function findPokemon(name) {
+        return pokemonList.filter(function (pokemon) {
+            return pokemon.name === name ? true : false;
+        });
+    }
 
     return {
         getAll: getAll,
         add: add,
-        biggestPokemon: biggestPokemon
+        biggestPokemon: biggestPokemon,
+        findPokemon: findPokemon
     };
 })();
+
+console.log(pokemonRepository.findPokemon("Bulbasaur"));
+
+pokemonRepository.add({
+    name: "Eve",
+    height: 20.96,
+    weight: "8.7 lbs",
+    category: "Cute",
+    abilities: "Thunder",
+    type: "Sweetnes"
+});
+
+pokemonRepository.add({
+    name: "Eve",
+    height: 20.96,
+    weight: "8.7 lbs",
+    category: "Cute",
+    abilities: "Thunder",
+    // type: "Sweetnes"
+});
 
 document.write(`
     <table>
@@ -64,7 +98,7 @@ document.write(`
         </thead>
         `);
 
-pokemonRepository.getAll().forEach(function (pokemon){
+pokemonRepository.getAll().forEach(function (pokemon) {
     document.write(`<tr><td>${pokemon.name}</td><td>${pokemon.weight}</td><td>${Math.round(pokemon.height)}</td><td>${pokemon.category}</td><td>${pokemon.abilities}</td><td>${pokemon.type}</td></tr>`);
 })
 
