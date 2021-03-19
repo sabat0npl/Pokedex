@@ -63,45 +63,32 @@ let pokemonRepository = (function () {
         });
     }
 
+    function addListItem(pokemon) {
+        let pokemonListUl = document.querySelector(".pokemon-list")
+        let listItem = document.createElement("li");
+        let button = document.createElement("button");
+        button.innerText = pokemon.name;
+        button.classList.add("button-class");
+        button.addEventListener("click", function () { // I am runing a showDetails function wrapped in function so it runs only after clik and not immediately
+            showDetails(pokemon);
+        });
+        listItem.appendChild(button);
+        pokemonListUl.appendChild(listItem);
+    }
+
+    function showDetails(pokemon) {
+        console.log(pokemon);
+    }
+
     return {
         getAll: getAll,
         add: add,
         biggestPokemon: biggestPokemon,
-        findPokemon: findPokemon
+        findPokemon: findPokemon,
+        addListItem: addListItem
     };
 })();
 
-console.log(pokemonRepository.findPokemon("Bulbasaur"));
-
-pokemonRepository.add({
-    name: "Eve",
-    height: 20.96,
-    weight: "8.7 lbs",
-    category: "Cute",
-    abilities: "Thunder",
-    type: "Sweetnes"
-});
-
-pokemonRepository.add({
-    name: "Eve",
-    height: 20.96,
-    weight: "8.7 lbs",
-    category: "Cute",
-    abilities: "Thunder",
-    // type: "Sweetnes"
-});
-
-document.write(`
-    <table>
-        <thead>
-            <tr><th>Name</th><th>Weight</th><th>Height</th><th>Category</th><th>Abilities</th><th>Type</th></tr>
-        </thead>
-        `);
-
 pokemonRepository.getAll().forEach(function (pokemon) {
-    document.write(`<tr><td>${pokemon.name}</td><td>${pokemon.weight}</td><td>${Math.round(pokemon.height)}</td><td>${pokemon.category}</td><td>${pokemon.abilities}</td><td>${pokemon.type}</td></tr>`);
+    pokemonRepository.addListItem(pokemon);
 })
-
-document.write("</table>"); // displaying the table with pokemons using for loop
-
-document.write(`<h3>The ${pokemonRepository.biggestPokemon()} is huge!!!</h3>`); // printing the name of the biggest pokemon
