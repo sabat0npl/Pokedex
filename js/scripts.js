@@ -1,5 +1,6 @@
 let pokemonRepository = (function () {
     let pokemonList = [{
+            id: 1,
             name: "Bulbasaur",
             height: 70.12,
             weight: "15.2 lbs",
@@ -8,6 +9,7 @@ let pokemonRepository = (function () {
             type: ["Grass", "Poison"]
         },
         {
+            id: 2,
             name: "Ivysaur",
             height: 99.06,
             weight: "28.7 lbs",
@@ -16,6 +18,7 @@ let pokemonRepository = (function () {
             type: ["Grass", "Poison"]
         },
         {
+            id: 3,
             name: "Venusaur",
             height: 200.66,
             weight: "220.5 lbs",
@@ -23,7 +26,8 @@ let pokemonRepository = (function () {
             abilities: "Overgrow",
             type: ["Grass", "Poison"]
         },
-        {
+        {   
+            id: 4,
             name: "Charmander",
             height: 60.96,
             weight: "18.7 lbs",
@@ -64,15 +68,20 @@ let pokemonRepository = (function () {
     }
 
     function addListItem(pokemon) {
-        let pokemonListUl = document.querySelector(".pokemon-list")
-        let listItem = document.createElement("li");
-        let button = document.createElement("button");
-        button.innerText = pokemon.name;
-        button.classList.add("button-class");
-        button.addEventListener("click", function () { // I am runing a showDetails function wrapped in function so it runs only after clik and not immediately
+        let pokemonListUl = document.querySelector(".display")
+        let listItem = document.createElement("button");
+        let pokemonImage = document.createElement("img");
+        let pokemonName = document.createElement("p");
+        listItem.classList.add("pokemon-list__item");
+        pokemonImage.classList.add("pokemon-list__image");
+        pokemonImage.setAttribute("src", (`https://pokeres.bastionbot.org/images/pokemon/${pokemon.id}.png`));
+        pokemonName.innerText = pokemon.name;
+        pokemonName.classList.add("pokemon-item__name");
+        listItem.addEventListener("click", function () { // I am runing a showDetails function wrapped in function so it runs only after clik and not immediately
             showDetails(pokemon);
         });
-        listItem.appendChild(button);
+        listItem.appendChild(pokemonImage);
+        listItem.appendChild(pokemonName);
         pokemonListUl.appendChild(listItem);
     }
 
