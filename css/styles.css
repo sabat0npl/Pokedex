@@ -1,8 +1,12 @@
 :root {
     --backgroundColor: #f00;
-    --frameColor: #c4c4c4;
+    --frameColor: #443f4c;
     --pokemonListItemBackground: #f0e6e6;
+    --hover: #f8da46;
 }
+
+
+
 
 * {
     box-sizing: border-box;
@@ -22,10 +26,25 @@ body {
     margin: 0;
 }
 
+p,h1 {
+    color: #312c3a;
+    padding: 0;
+    margin: 0;
+}
+
+span {
+    font-weight: bold;
+    font-size: 1.4em;
+    padding-left: 5px;
+}
+
+
+
 .pokeball {
-    margin: 30px auto;
+    margin: 20px auto;
     display: block;
 }
+
 .frame {
     margin: 0 auto;
     background-color: var(--frameColor);
@@ -33,7 +52,7 @@ body {
     height: 475px;
     border: 1.5px solid black;
     border-radius: 5px;
-    }
+}
 
 .display {
     display: flex;
@@ -42,14 +61,7 @@ body {
     margin: 10px auto;
     background-color: #fff;
     width: 320px;
-    height: 415px;
-    border: 1px solid black;
-}
-
-.battery {
-    position: absolute;
-    top: 5px;
-    right: 5px;
+    height: 455px;
 }
 
 .pokemon-list__item {
@@ -62,16 +74,12 @@ body {
     align-content: center;
     justify-content: left;
     border: none;
-    }
+}
 
-    .pokemon-list__item:first-of-type {
-        margin-top: 30px;
-    }
-
-    .pokemon-list__item:hover {
-        background-color: #67EC28;
-        border: 4px solid #67EC28;
-    }
+.pokemon-list__item:hover {
+    background-color: var(--hover);
+    border: 4px solid var(--hover);
+}
 
 .pokemon-list__image {
     align-self: center;
@@ -84,5 +92,93 @@ body {
     padding-left: 20px;
     font-weight: bold;
     font-size: 1.4em;
+    align-self: center;
 }
 
+.pokemon-details-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.details-foto {
+    margin-top: 10px;
+    align-self: center;
+    width: 50%
+}
+
+.display h1 {
+    font: 2em;
+    align-self: center;
+    margin: 0;
+    padding-bottom: 5px;
+}
+
+.description {
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.abillities {
+    display: flex;
+    align-content: center;
+    justify-content: space-evenly;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2em;
+
+}
+
+.size {
+    display: flex;
+    justify-content: space-evenly;
+    padding-top: 10px;
+}
+
+.type {
+    margin-top: 5px;
+    padding: 10px;
+    align-self: center;
+}
+
+.type button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: none;
+    }
+
+.type button:hover {
+    transform: scale(1.15);
+}
+
+.Poison {
+    background-color: violet;
+}
+
+.Grass {
+    background-color: lightgreen;
+}
+
+.display > p, .description > p {
+    padding: 10px;
+    align-self: center;
+}
+
+.evolution {
+    align-self: center;
+    width: 70%;
+    display: flex;
+    justify-content: space-between ;
+}
+
+.evolution img {
+    height: 40px;
+}
+
+.bold {
+    font-weight: bold;
+}
