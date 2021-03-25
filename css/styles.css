@@ -24,6 +24,7 @@ body {
     padding: 0;
     background-color: var(--backgroundColor);
     margin: 0;
+    position: relative;
 }
 
 p,h1 {
@@ -62,6 +63,7 @@ img {
     height: 475px;
     border: 1.5px solid black;
     border-radius: 5px;
+    z-index: 0;
 }
 
 .display {
@@ -194,9 +196,21 @@ img {
 }
 
 .retroButtons {
+    display: flex;
+    flex-direction: column;
     margin: 0 auto;
     width: 340px;
     position: relative;
+}
+
+.btn {
+    margin-top: 10px;
+    border-radius: 10px;
+    background-color: #c4c4c4;
+    padding: 5px;
+    display: inline-block;
+    width: 30%;
+    align-self: center;
 }
 
 #up, #right, #down, #left, #search, #filter {
@@ -233,3 +247,44 @@ img {
     right: 30px;
 }
     
+.hidden {
+    display: none !important;
+}
+
+.form__pokemon {
+    color: white;
+    position: absolute;
+    left: 35%;
+    background-color: rgba(0, 0, 0, 0.95);
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    z-index: 1;
+    border-radius: 30px;
+    text-align: center;
+}
+
+input {
+    height: 30px;
+    width: 70%;
+    padding: 5px;
+    border: none;
+    border-bottom: 1px solid var(--secondary);
+    background-color: var(--primary);
+    color: var(--secondary);
+    align-self: center;
+    margin: 0 auto;
+}
+
+input:active,
+input:focus {
+    outline: none;
+    border-bottom: 1px solid blue;
+}
+
+.input__group {
+    width: 100%;
+    margin: 20px;
+}

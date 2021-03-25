@@ -40,21 +40,14 @@ let pokemonRepository = (function () {
             evolution: ["4", "5", "6"]
         }
     ];
+    let id;
 
     function getAll() {
         return pokemonList;
     }
 
-    function addv(item) {
-        let keysValidation = [];
-        Object.keys(pokemonList[0]).forEach(function (key, i) {
-            return keysValidation.push(key === Object.keys(item)[i])
-        });
-        return typeof (item) === typeof ({}) && keysValidation.indexOf(false) === -1 ? true : false;
-    }
-
     function add(item) {
-        addv(item) ? pokemonList.push(item) : console.log("Wrong data");
+        pokemonList.push(item);
     }
 
     function biggestPokemon() {
@@ -89,16 +82,26 @@ let pokemonRepository = (function () {
         pokemonListUl.appendChild(listItem);
     }
 
-    function showDetails(pokemon) {
+    function clearDisplay() {
         let container = document.querySelector(".display");
         while (container.lastChild) {
             container.removeChild(document.querySelector(".display").lastChild);
         }
+    }
+
+    function showDetails(pokemon) {
+        if (!pokemon) {
+            return window.alert("We dont have this pokemon in our database");
+        }
+        id = pokemon.id;
+        let container = document.querySelector(".display");
+        clearDisplay();
         let pokemonImage = document.createElement("img");
         pokemonImage.classList.add("details-foto");
         pokemonImage.setAttribute("src", (`https://pokeres.bastionbot.org/images/pokemon/${pokemon.id}.png`));
         container.appendChild(pokemonImage);
         let pokemonName = document.createElement("h1");
+        pokemonName.classList.add(pokemon.id);
         container.appendChild(pokemonName);
         pokemonName.innerText = `#${pokemon.id} ${pokemon.name}`;
         let description = document.createElement("div");
@@ -147,30 +150,159 @@ let pokemonRepository = (function () {
             })
         }
         container.appendChild(typeDiv);
-        let evolutionLineTitle = document.createElement("p");
-        evolutionLineTitle.innerText = "Evolution Line";
-        container.appendChild(evolutionLineTitle);
-        let evolutionLineDiv = document.createElement("div");
-        evolutionLineDiv.classList.add("evolution");
-        pokemon.evolution.forEach(function (evolution) {
-            let evoImg = document.createElement("img");
-            evoImg.setAttribute("src", `https://pokeres.bastionbot.org/images/pokemon/${evolution}.png`);
-            evolutionLineDiv.appendChild(evoImg);
-        })
-        container.appendChild(evolutionLineDiv);
-        console.log(pokemon);
+        if (pokemon.evolution != undefined) {
+            let evolutionLineTitle = document.createElement("p");
+            evolutionLineTitle.innerText = "Evolution Line";
+            container.appendChild(evolutionLineTitle);
+            let evolutionLineDiv = document.createElement("div");
+            evolutionLineDiv.classList.add("evolution");
+            pokemon.evolution.forEach(function (evolution) {
+                let evoImg = document.createElement("img");
+                evoImg.setAttribute("src", `https://pokeres.bastionbot.org/images/pokemon/${evolution}.png`);
+                evolutionLineDiv.appendChild(evoImg);
+            })
+            container.appendChild(evolutionLineDiv);
+        }
+        console.log(id);
     }
 
+    function filterType(type) {
+        clearDisplay();
+        return pokemonList.filter(function (pokemon) {
+            return typeof type !== typeof "string" ? (pokemon.type === type ? true : false) : (pokemon.type.includes(type) ? true : false);
+        });
+    }
+
+    // function that removes a pokemon from the list
+    function remove() {
+        return pokemonList = pokemonList.filter(pokemon => pokemon.id !== id)
+    }
+
+    // function to edit a pokemon
+    function edit(pokemonEdited) {
+        pokemonList[id-1] = pokemonEdited;
+    }
+
+    // function to validate the pokemon 
+    function pokemonValidate(pokemon) {
+        if (typeof (pokemon) === 'object') {
+            if (typeof (pokemon.name) !== 'string') {
+                return 'Your pokemon should have a name'
+            } else if (typeof (pokemon.height) !== 'number') {
+                return 'Your pokemon should have a height and it should be a number'
+            } else if (typeof (pokemon.weight) !== 'number') {
+                return 'Your pokemon should have a weight and it should be a number'
+            } else if (typeof (pokemon.abilities) !== 'object') {
+                return 'Your pokemon should have abilities (you should separate them by comma)'
+            } else if (!pokemon.types.find(type => (type === 'fire' || type === 'flying' || type === 'grass' || type === 'electric' || type === 'water' || type === 'other'))) {
+                return 'Your pokemon types should have one of theses (fire, flying, grass, electric, water, other)'
+            } else {
+                return null
+            }
+        } else {
+            return 'Ups, this is not a pokemon'
+        }
+    }
+
+    document.querySelector('.form__pokemon').onsubmit = e => {
+        e.preventDefault();
+        document.getElementById("form__pokemon").classList.add('hidden');
+        const listContainer = document.querySelector('.pokemon__list')
+        const name = document.getElementById('input-name').value
+        const height = parseFloat(document.getElementById('input-height').value)
+        const weight = parseFloat(document.getElementById('input-weight').value)
+        const types = document.getElementById('input-type').value.split(',')
+        const abillities = document.getElementById('input-abilities').value.split(',')
+        if (document.querySelector('.form__pokemon').querySelector('button').innerHTML === 'Add a new Pokemon') {
+            const sended = add({
+                id: pokemonList.length + 1,
+                name: name,
+                height: height,
+                weight: weight,
+                type: types,
+                abillities: abillities
+            });
+            clearDisplay();
+            getAll().forEach(function (pokemon, i) {
+                addListItem(pokemon, i);
+            })
+            console.log(pokemonList);
+        } else {
+            const pokemonEdited = edit({
+                id: id,
+                name: name,
+                height: height,
+                weight: weight,
+                type: types,
+                abillities: abillities
+            })
+            clearDisplay();
+            getAll().forEach(function (pokemon, i) {
+                addListItem(pokemon, i);
+            })
+
+        }
+    }
+
+    document.querySelector("#search").addEventListener("click", function () { // I am runing a showDetails function wrapped in function so it runs only after clik and not immediately
+        let pokemon = window.prompt("What is the name of Pokemon you are looking for:").toLowerCase();
+        pokemon = pokemon[0].toUpperCase() + pokemon.slice(1);
+        pokemonRepository.showDetails(pokemonRepository.findPokemon(pokemon ? pokemon : null)[0])
+    });
+
+    document.querySelector("#filter").addEventListener("click", function () { // I am runing a showDetails function wrapped in function so it runs only after clik and not immediately
+        let type = window.prompt("What is the type of Pokemons you are looking for:").toLowerCase();
+        type = type[0].toUpperCase() + type.slice(1);
+        pokemonRepository.filterType(type) == "" ? alert("We dont have this kind of Pokemon in our Database") :
+            pokemonRepository.filterType(type).forEach(function (element) {
+                return pokemonRepository.addListItem(element)
+            })
+    });
+
+    document.querySelector("#add").addEventListener("click", function () {
+        const pokemonForm = document.querySelector('.form__pokemon')
+        document.querySelectorAll('input').forEach(el => el.value = '')
+        pokemonForm.classList.remove('hidden')
+        pokemonForm.querySelector('button').innerText = 'Add a new Pokemon';
+    });
+
+    document.querySelector("#delete").addEventListener("click", function () {
+        pokemonRepository.remove();
+        pokemonRepository.clearDisplay();
+        pokemonRepository.getAll().forEach(function (pokemon, i) {
+            pokemonRepository.addListItem(pokemon, i);
+        })
+    });
+
+    document.querySelector("#edit").addEventListener("click", function () {
+        const pokemonForm = document.querySelector('.form__pokemon')
+        document.querySelectorAll('input').forEach(el => el.value = '')
+        pokemonForm.classList.remove('hidden')
+        pokemonForm.querySelector('button').innerText = 'Edit a Pokemon';
+        // document.getElementById('name').value = pokemon.name
+        // document.getElementById('height').value = pokemon.height
+        // document.getElementById('weight').value = pokemon.weight
+        // document.getElementById('type').value = pokemon.types.join()
+        // document.getElementById('abilities').value = pokemon.abilities.join()
+    });
+
+    console.log(id)
+    console.log(pokemonList)
+
+
+    getAll().forEach(function (pokemon, i) {
+        addListItem(pokemon, i);
+    })
 
     return {
         getAll: getAll,
         add: add,
         biggestPokemon: biggestPokemon,
         findPokemon: findPokemon,
-        addListItem: addListItem
+        addListItem: addListItem,
+        showDetails: showDetails,
+        filterType: filterType,
+        remove: remove,
+        clearDisplay: clearDisplay
     };
 })();
-
-pokemonRepository.getAll().forEach(function (pokemon, i) {
-    pokemonRepository.addListItem(pokemon, i);
-})
