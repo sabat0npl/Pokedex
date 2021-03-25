@@ -192,7 +192,7 @@ let pokemonRepository = (function () {
                 return 'Your pokemon should have a height and it should be a number'
             } else if (typeof (pokemon.weight) !== 'number') {
                 return 'Your pokemon should have a weight and it should be a number'
-            } else if (typeof (pokemon.abilities) !== 'object') {
+            } else if (typeof (pokemon.abilities) !== 'string') {
                 return 'Your pokemon should have abilities (you should separate them by comma)'
             } else if (!pokemon.types.find(type => (type === 'fire' || type === 'flying' || type === 'grass' || type === 'electric' || type === 'water' || type === 'other'))) {
                 return 'Your pokemon types should have one of theses (fire, flying, grass, electric, water, other)'
