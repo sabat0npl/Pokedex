@@ -134,7 +134,7 @@ img {
     flex-direction: column;
 }
 
-.abillities {
+.abilities {
     display: flex;
     align-content: center;
     justify-content: space-evenly;
@@ -167,11 +167,11 @@ img {
     transform: scale(1.15);
 }
 
-.Poison {
+.poison {
     background-color: violet;
 }
 
-.Grass {
+.grass {
     background-color: lightgreen;
 }
 

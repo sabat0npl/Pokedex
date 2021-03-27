@@ -1,46 +1,36 @@
 let pokemonRepository = (function () {
-    let pokemonList = [{
-            id: 1,
-            name: "Bulbasaur",
-            height: 70.12,
-            weight: "15.2 lbs",
-            category: "Seed",
-            abillities: "Overgrow",
-            type: ["Grass", "Poison"],
-            evolution: ["1", "2", "3"]
-        },
-        {
-            id: 2,
-            name: "Ivysaur",
-            height: 99.06,
-            weight: "28.7 lbs",
-            category: "Seed",
-            abillities: ["Overgrow", "Headbut"],
-            type: ["Grass", "Poison"],
-            evolution: ["1", "2", "3"]
-        },
-        {
-            id: 3,
-            name: "Venusaur",
-            height: 200.66,
-            weight: "220.5 lbs",
-            category: "Seed",
-            abillities: "Overgrow",
-            type: ["Grass", "Poison"],
-            evolution: ["1", "2", "3"]
-        },
-        {
-            id: 4,
-            name: "Charmander",
-            height: 60.96,
-            weight: "18.7 lbs",
-            category: "Lizard",
-            abillities: "Blaze",
-            type: "Fire",
-            evolution: ["4", "5", "6"]
-        }
-    ];
+    let count;
     let id;
+    let pokemonList = [];
+    let page = 0;
+    let apiUrl = `https://pokeapi.co/api/v2/pokemon/?limit=8&offset=${0+page*8}`;
+
+    function loadList() {
+        showLoadingMessage();
+        return fetch(apiUrl).then(function (response) {
+            return response.json();
+        }).then(function (json) {
+            json.results.forEach(function (item, i) {
+                count = item.count;
+                let pokemon = {
+                    pokemonIndex: i + 1 + (page * 9),
+                    name: item.name,
+                    detailsUrl: item.url
+                };
+                add(pokemon);
+                clearDisplay();
+            });
+        }).catch(function (e) {
+            console.error(e);
+        })
+    }
+
+    function showLoadingMessage() {
+        let container = document.querySelector(".display");
+        let loadingMessage = document.createElement("h1");
+        loadingMessage.innerText = "The data are being downloaded"
+        container.appendChild(loadingMessage);
+    }
 
     function getAll() {
         return pokemonList;
@@ -71,7 +61,7 @@ let pokemonRepository = (function () {
         let pokemonName = document.createElement("p");
         listItem.classList.add("pokemon-list__item");
         pokemonImage.classList.add("pokemon-list__image");
-        pokemonImage.setAttribute("src", `https://pokeres.bastionbot.org/images/pokemon/${pokemon.id}.png`);
+        pokemonImage.setAttribute("src", `https://pokeres.bastionbot.org/images/pokemon/${pokemon.pokemonIndex}.png`);
         pokemonName.innerText = pokemon.name;
         pokemonName.classList.add("pokemon-item__name");
         listItem.addEventListener("click", function () { // I am runing a showDetails function wrapped in function so it runs only after clik and not immediately
@@ -90,80 +80,71 @@ let pokemonRepository = (function () {
     }
 
     function showDetails(pokemon) {
+        id = pokemon.pokemonIndex;
         if (!pokemon) {
             return window.alert("We dont have this pokemon in our database");
         }
-        id = pokemon.id;
-        let container = document.querySelector(".display");
-        clearDisplay();
-        let pokemonImage = document.createElement("img");
-        pokemonImage.classList.add("details-foto");
-        pokemonImage.setAttribute("src", (`https://pokeres.bastionbot.org/images/pokemon/${pokemon.id}.png`));
-        container.appendChild(pokemonImage);
-        let pokemonName = document.createElement("h1");
-        pokemonName.classList.add(pokemon.id);
-        container.appendChild(pokemonName);
-        pokemonName.innerText = `#${pokemon.id} ${pokemon.name}`;
-        let description = document.createElement("div");
-        description.classList.add("description");
-        container.appendChild(description);
-        let size = document.createElement("div");
-        size.classList.add("size");
-        description.appendChild(size);
-        let sizeH = document.createElement("p");
-        sizeH.innerHTML = `Height <span> ${pokemon.height} </span>`;
-        size.appendChild(sizeH);
-        let sizeW = document.createElement("p");
-        sizeW.innerHTML = `Weight <span> ${pokemon.weight} </span>`;
-        size.appendChild(sizeW);
-        let abillities = document.createElement("p");
-        abillities.classList.add("description-header");
-        abillities.innerText = "Abillities";
-        description.appendChild(abillities);
-        let abillitiesDiv = document.createElement("div");
-        abillitiesDiv.classList.add("abillities");
-        if (typeof (pokemon.abillities) === typeof ("string")) {
-            let abillityP = document.createElement("p");
-            abillityP.innerText = pokemon.abillities;
-            abillitiesDiv.appendChild(abillityP);
-        } else {
-            pokemon.abillities.forEach(function (abillity) {
-                let abillityP = document.createElement("p");
-                abillityP.innerText = abillity;
-                abillitiesDiv.appendChild(abillityP);
+        loadDetails(pokemon).then(function () {
+            console.log(pokemon);
+            let container = document.querySelector(".display");
+            clearDisplay();
+            let pokemonImage = document.createElement("img");
+            pokemonImage.classList.add("details-foto");
+            pokemonImage.setAttribute("src", (`https://pokeres.bastionbot.org/images/pokemon/${pokemon.pokemonIndex}.png`));
+            container.appendChild(pokemonImage);
+            let pokemonName = document.createElement("h1");
+            pokemonName.classList.add(pokemon.pokemonIndex);
+            container.appendChild(pokemonName);
+            pokemonName.innerText = `#${pokemon.pokemonIndex} ${pokemon.name}`;
+            let description = document.createElement("div");
+            description.classList.add("description");
+            container.appendChild(description);
+            let size = document.createElement("div");
+            size.classList.add("size");
+            description.appendChild(size);
+            let sizeH = document.createElement("p");
+            sizeH.innerHTML = `Height <span> ${pokemon.height} </span>`;
+            size.appendChild(sizeH);
+            let sizeW = document.createElement("p");
+            sizeW.innerHTML = `Weight <span> ${pokemon.weight} </span>`;
+            size.appendChild(sizeW);
+            let abilities = document.createElement("p");
+            abilities.classList.add("description-header");
+            abilities.innerText = "Abilities";
+            description.appendChild(abilities);
+            let abilitiesDiv = document.createElement("div");
+            abilitiesDiv.classList.add("abilities");
+            pokemon.abilities.forEach(function (ability) {
+                let abilityP = document.createElement("p");
+                abilityP.innerText = ability;
+                abilitiesDiv.appendChild(abilityP);
             })
-        }
-        description.appendChild(abillitiesDiv);
-        let typeDiv = document.createElement("div");
-        typeDiv.classList.add("type");
-        if (typeof pokemon.type === typeof "string") {
-            let buttonType = document.createElement("button");
-            buttonType.classList.add(pokemon.type);
-            buttonType.innerText = pokemon.type;
-            typeDiv.appendChild(buttonType);
-        } else {
-            pokemon.type.forEach(function (type) {
+            description.appendChild(abilitiesDiv);
+            let typeDiv = document.createElement("div");
+            typeDiv.classList.add("type");
+            pokemon.types.forEach(function (type) {
                 let buttonType = document.createElement("button");
                 buttonType.classList.add(type);
                 buttonType.innerText = type;
                 typeDiv.appendChild(buttonType);
             })
-        }
-        container.appendChild(typeDiv);
-        if (pokemon.evolution != undefined) {
-            let evolutionLineTitle = document.createElement("p");
-            evolutionLineTitle.innerText = "Evolution Line";
-            container.appendChild(evolutionLineTitle);
-            let evolutionLineDiv = document.createElement("div");
-            evolutionLineDiv.classList.add("evolution");
-            pokemon.evolution.forEach(function (evolution) {
-                let evoImg = document.createElement("img");
-                evoImg.setAttribute("src", `https://pokeres.bastionbot.org/images/pokemon/${evolution}.png`);
-                evolutionLineDiv.appendChild(evoImg);
-            })
-            container.appendChild(evolutionLineDiv);
-        }
-        console.log(id);
+            container.appendChild(typeDiv);
+            if (pokemon.evolution != undefined) {
+                let evolutionLineTitle = document.createElement("p");
+                evolutionLineTitle.innerText = "Evolution Line";
+                container.appendChild(evolutionLineTitle);
+                let evolutionLineDiv = document.createElement("div");
+                evolutionLineDiv.classList.add("evolution");
+                pokemon.evolution.forEach(function (evolution) {
+                    let evoImg = document.createElement("img");
+                    evoImg.setAttribute("src", `https://pokeres.bastionbot.org/images/pokemon/${evolution}.png`);
+                    evolutionLineDiv.appendChild(evoImg);
+                })
+                container.appendChild(evolutionLineDiv);
+            }
+            console.log(id);
+        })
+
     }
 
     function filterType(type) {
@@ -180,7 +161,7 @@ let pokemonRepository = (function () {
 
     // function to edit a pokemon
     function edit(pokemonEdited) {
-        pokemonList[id-1] = pokemonEdited;
+        pokemonList[id - 1] = pokemonEdited;
     }
 
     // function to validate the pokemon 
@@ -212,7 +193,7 @@ let pokemonRepository = (function () {
         const height = parseFloat(document.getElementById('input-height').value)
         const weight = parseFloat(document.getElementById('input-weight').value)
         const types = document.getElementById('input-type').value.split(',')
-        const abillities = document.getElementById('input-abilities').value.split(',')
+        const abilities = document.getElementById('input-abilities').value.split(',')
         if (document.querySelector('.form__pokemon').querySelector('button').innerHTML === 'Add a new Pokemon') {
             const sended = add({
                 id: pokemonList.length + 1,
@@ -220,7 +201,7 @@ let pokemonRepository = (function () {
                 height: height,
                 weight: weight,
                 type: types,
-                abillities: abillities
+                abilities: abilities
             });
             clearDisplay();
             getAll().forEach(function (pokemon, i) {
@@ -234,7 +215,7 @@ let pokemonRepository = (function () {
                 height: height,
                 weight: weight,
                 type: types,
-                abillities: abillities
+                abilities: abilities
             })
             clearDisplay();
             getAll().forEach(function (pokemon, i) {
@@ -279,15 +260,29 @@ let pokemonRepository = (function () {
         document.querySelectorAll('input').forEach(el => el.value = '')
         pokemonForm.classList.remove('hidden')
         pokemonForm.querySelector('button').innerText = 'Edit a Pokemon';
-        // document.getElementById('name').value = pokemon.name
-        // document.getElementById('height').value = pokemon.height
-        // document.getElementById('weight').value = pokemon.weight
-        // document.getElementById('type').value = pokemon.types.join()
-        // document.getElementById('abilities').value = pokemon.abilities.join()
     });
 
-    console.log(id)
-    console.log(pokemonList)
+    function loadDetails(item) {
+        let url = item.detailsUrl;
+        return fetch(url).then(function (response) {
+            return response.json();
+        }).then(function (details) {
+            // Now we add the details to the item
+            item.height = details.height;
+            item.weight = details.weight;
+            item.types = [];
+            details.types.forEach(function (object) {
+                return item.types.push(object.type.name)
+            });
+            item.abilities = [];
+            details.abilities.forEach(function (object) {
+                return item.abilities.push(object.ability.name)
+            });
+        }).catch(function (e) {
+            console.error(e);
+        });
+    }
+
 
 
     getAll().forEach(function (pokemon, i) {
@@ -295,6 +290,8 @@ let pokemonRepository = (function () {
     })
 
     return {
+        loadDetails: loadDetails,
+        loadList: loadList,
         getAll: getAll,
         add: add,
         biggestPokemon: biggestPokemon,
@@ -303,6 +300,12 @@ let pokemonRepository = (function () {
         showDetails: showDetails,
         filterType: filterType,
         remove: remove,
-        clearDisplay: clearDisplay
     };
 })();
+
+pokemonRepository.loadList().then(function () {
+    // Now the data is loaded!
+    for (let i = 0; i < 9; i++) {
+        pokemonRepository.addListItem(pokemonRepository.getAll()[i]);
+    };
+});
