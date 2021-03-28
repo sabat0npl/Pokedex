@@ -12,31 +12,34 @@
 <body>
     <img class="pokeball" src="./img/pokeball.svg" alt="Pokeball logo">
     <!-- Pokemon Adding and Editing pokemon in the static data app -->
-    <form id="form__pokemon" class="form__pokemon hidden">
-        <div class="input__group">
-            <label for="input-name">Name</label>
-            <input id="input-name" type="text" placeholder="Ex: Charizard" required>
-        </div>
-        <div class="input__group">
-            <label for="input-height">Height</label>
-            <input id="input-height" type="number" step="any" placeholder="Ex: 0.7" required>
-        </div>
-        <div class="input__group">
-            <label for="input-weight">Weight</label>
-            <input id="input-weight" type="number" step="any" placeholder="Ex: 1.2" required>
-        </div>
-        <div class="input__group">
-            <label for="input-type">Type:</label>
-            <input id="input-type" type="text" placeholder="Ex: fire, flying" required>
-        </div>
-        <div class="input__group">
-            <label for="input-abilities">Abilities</label>
-            <input id="input-abilities" type="text" placeholder="Ex: jump, run" required>
-        </div>
-        <div class="input__group">
-            <button id="submit-form" class="btn btn-primary" type="submit">Add a New Pokemon</button>
-        </div>
-    </form>
+    <div id="modal-container" class="">
+        <button class='modal-close'>Close</button>
+        <form id="form__pokemon" class="form__pokemon">
+            <div class="input__group">
+                <label for="input-name">Name</label>
+                <input id="input-name" type="text" placeholder="Ex: Charizard" required>
+            </div>
+            <div class="input__group">
+                <label for="input-height">Height</label>
+                <input id="input-height" type="number" step="any" placeholder="Ex: 0.7" required>
+            </div>
+            <div class="input__group">
+                <label for="input-weight">Weight</label>
+                <input id="input-weight" type="number" step="any" placeholder="Ex: 1.2" required>
+            </div>
+            <div class="input__group">
+                <label for="input-type">Type:</label>
+                <input id="input-type" type="text" placeholder="Ex: fire, flying" required>
+            </div>
+            <div class="input__group">
+                <label for="input-abilities">Abilities</label>
+                <input id="input-abilities" type="text" placeholder="Ex: jump, run" required>
+            </div>
+            <div class="input__group">
+                <button id="submit-form" class="btn btn-primary" type="submit">Add a New Pokemon</button>
+            </div>
+        </form>
+    </div>
     <div class="frame">
         <div class="display">
 

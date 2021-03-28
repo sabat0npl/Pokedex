@@ -1,9 +1,28 @@
 let pokemonRepository = (function () {
+    let modalContainer = document.querySelector('#modal-container');
     let count;
     let id;
     let pokemonList = [];
     let page = 0;
     let apiUrl = `https://pokeapi.co/api/v2/pokemon/?limit=8&offset=${0+page*8}`;
+
+    function hideModal() {
+        modalContainer.classList.remove('is-visible');
+    }
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modalContainer.classList.contains('is-visible')) {
+            hideModal();
+        }
+    });
+    modalContainer.addEventListener('click', (e) => {
+        // Since this is also triggered when clicking INSIDE the modal
+        // We only want to close if the user clicks directly on the overlay
+        let target = e.target;
+        if (target === modalContainer) {
+            hideModal();
+        }
+    });
 
     function loadList() {
         showLoadingMessage();
@@ -156,7 +175,7 @@ let pokemonRepository = (function () {
 
     // function that removes a pokemon from the list
     function remove() {
-        return pokemonList = pokemonList.filter(pokemon => pokemon.id !== id)
+        return pokemonList = pokemonList.filter(pokemon => pokemon.pokemonIndex !== id)
     }
 
     // function to edit a pokemon
@@ -196,7 +215,7 @@ let pokemonRepository = (function () {
         const abilities = document.getElementById('input-abilities').value.split(',')
         if (document.querySelector('.form__pokemon').querySelector('button').innerHTML === 'Add a new Pokemon') {
             const sended = add({
-                id: pokemonList.length + 1,
+                pokemonIndex: pokemonList.length + 1,
                 name: name,
                 height: height,
                 weight: weight,
@@ -210,7 +229,7 @@ let pokemonRepository = (function () {
             console.log(pokemonList);
         } else {
             const pokemonEdited = edit({
-                id: id,
+                pokemonIndex: id,
                 name: name,
                 height: height,
                 weight: weight,
@@ -241,24 +260,24 @@ let pokemonRepository = (function () {
     });
 
     document.querySelector("#add").addEventListener("click", function () {
+        modalContainer.classList.add('is-visible');
         const pokemonForm = document.querySelector('.form__pokemon')
         document.querySelectorAll('input').forEach(el => el.value = '')
-        pokemonForm.classList.remove('hidden')
         pokemonForm.querySelector('button').innerText = 'Add a new Pokemon';
     });
 
     document.querySelector("#delete").addEventListener("click", function () {
-        pokemonRepository.remove();
-        pokemonRepository.clearDisplay();
-        pokemonRepository.getAll().forEach(function (pokemon, i) {
-            pokemonRepository.addListItem(pokemon, i);
+        remove();
+        clearDisplay();
+        getAll().forEach(function (pokemon, i) {
+        addListItem(pokemon, i);
         })
     });
 
     document.querySelector("#edit").addEventListener("click", function () {
+        modalContainer.classList.add('is-visible');
         const pokemonForm = document.querySelector('.form__pokemon')
         document.querySelectorAll('input').forEach(el => el.value = '')
-        pokemonForm.classList.remove('hidden')
         pokemonForm.querySelector('button').innerText = 'Edit a Pokemon';
     });
 
@@ -268,6 +287,8 @@ let pokemonRepository = (function () {
             return response.json();
         }).then(function (details) {
             // Now we add the details to the item
+            item.pokemonIndex = details.id;
+            item.name = details.name;
             item.height = details.height;
             item.weight = details.weight;
             item.types = [];
