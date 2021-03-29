@@ -6,16 +6,19 @@ let pokemonRepository = (function () {
     let page = 0;
     let apiUrl = `https://pokeapi.co/api/v2/pokemon/?limit=8&offset=${0+page*8}`;
 
-    function hideModal() {
+    // Functions to work with modal
+
+    function hideModal() { // this function is used to hidding modal
         modalContainer.classList.remove('is-visible');
     }
 
-    window.addEventListener('keydown', (e) => {
+    window.addEventListener('keydown', (e) => { // function to close modal with ESC key
         if (e.key === 'Escape' && modalContainer.classList.contains('is-visible')) {
             hideModal();
         }
     });
-    modalContainer.addEventListener('click', (e) => {
+
+    modalContainer.addEventListener('click', (e) => { // eventlistner to close modal when clicking outside
         // Since this is also triggered when clicking INSIDE the modal
         // We only want to close if the user clicks directly on the overlay
         let target = e.target;
@@ -24,13 +27,14 @@ let pokemonRepository = (function () {
         }
     });
 
+    // Functions to Fetch data from API
+
     function loadList() {
         showLoadingMessage();
         return fetch(apiUrl).then(function (response) {
             return response.json();
         }).then(function (json) {
             json.results.forEach(function (item, i) {
-                count = item.count;
                 let pokemon = {
                     pokemonIndex: i + 1 + (page * 9),
                     name: item.name,
@@ -38,43 +42,89 @@ let pokemonRepository = (function () {
                 };
                 add(pokemon);
                 clearDisplay();
+                return count = item.count;
             });
         }).catch(function (e) {
             console.error(e);
         })
     }
 
-    function showLoadingMessage() {
+    function loadDetails(item) {
+        let url = item.detailsUrl;
+        return fetch(url).then(function (response) {
+            return response.json();
+        }).then(function (details) {
+            console.log(details)
+            if (details == "") {
+            // Now we add the details to the item
+            item.pokemonIndex = details.id;
+            item.name = details.name;
+            item.height = details.height;
+            item.weight = details.weight;
+            item.types = [];
+            details.types.forEach(function (object) {
+                return item.types.push(object.type.name)
+            });
+            item.abilities = [];
+            details.abilities.forEach(function (object) {
+                return item.abilities.push(object.ability.name)
+            })};
+        }).catch(function (e) {
+            alert(error(e));
+        });
+    }
+
+    function showLoadingMessage() { // A message showed while fetching data
         let container = document.querySelector(".display");
         let loadingMessage = document.createElement("h1");
         loadingMessage.innerText = "The data are being downloaded"
         container.appendChild(loadingMessage);
     }
 
-    function getAll() {
+    function getAll() { // the way to get access to pokemonList data
         return pokemonList;
     }
 
-    function add(item) {
+    function add(item) { // function to add items to array with pokemons
         pokemonList.push(item);
     }
 
-    function biggestPokemon() {
-        let huge = 0; // initiating a variable used to find the biggest pokemon
-        pokemonList.forEach(function (pokemon, i) {
-            pokemonList[huge].height < pokemon.height ? huge = i : huge = huge; // I have corrected this logic, it was wasn't working good
-        })
-        return pokemonList[huge].name
-    } // function to find the bigges Pokemon
+    // Search function
 
-    function findPokemon(name) {
-        return pokemonList.filter(function (pokemon) {
-            return pokemon.name === name ? true : false;
+    function loadDetails(item) {
+        let url = item.detailsUrl;
+        return fetch(url).then(function (response) {
+            return response.json();
+        }).then(function (details) {
+            // Now we add the details to the item
+            item.pokemonIndex = details.id;
+            item.name = details.name;
+            item.height = details.height;
+            item.weight = details.weight;
+            item.types = [];
+            details.types.forEach(function (object) {
+                return item.types.push(object.type.name)
+            });
+            item.abilities = [];
+            details.abilities.forEach(function (object) {
+                return item.abilities.push(object.ability.name)
+            });
+        }).catch(function (e) {
+            console.error(e);
         });
     }
 
-    function addListItem(pokemon) {
-        let pokemonListUl = document.querySelector(".display");
+    document.querySelector("#search").addEventListener("click", function () { // Eventlistener for Search function
+        let pokemonNamePrompt = window.prompt("What is the name of Pokemon you are looking for:").toLowerCase();
+        let pokemon = {
+            name: pokemonNamePrompt,
+            detailsUrl: `https://pokeapi.co/api/v2/pokemon/${pokemonNamePrompt}`
+        }
+        showDetails(pokemon);
+    });
+
+    function addListItem(pokemon) { // function to print an item from the list on the screen
+        let pokemonListDisplay = document.querySelector(".display");
         let listItem = document.createElement("button");
         let pokemonImage = document.createElement("img");
         let pokemonName = document.createElement("p");
@@ -88,23 +138,19 @@ let pokemonRepository = (function () {
         });
         listItem.appendChild(pokemonImage);
         listItem.appendChild(pokemonName);
-        pokemonListUl.appendChild(listItem);
+        pokemonListDisplay.appendChild(listItem);
     }
 
-    function clearDisplay() {
+    function clearDisplay() { // its clear the display containe in preparation for new data
         let container = document.querySelector(".display");
         while (container.lastChild) {
             container.removeChild(document.querySelector(".display").lastChild);
         }
     }
 
-    function showDetails(pokemon) {
+    function showDetails(pokemon) { // a function that is showing the details of the pokemon after chosing one from the list
         id = pokemon.pokemonIndex;
-        if (!pokemon) {
-            return window.alert("We dont have this pokemon in our database");
-        }
         loadDetails(pokemon).then(function () {
-            console.log(pokemon);
             let container = document.querySelector(".display");
             clearDisplay();
             let pokemonImage = document.createElement("img");
@@ -161,17 +207,24 @@ let pokemonRepository = (function () {
                 })
                 container.appendChild(evolutionLineDiv);
             }
-            console.log(id);
         })
-
     }
 
-    function filterType(type) {
+    function filterType(types) { // function to filter pokemons by Type
         clearDisplay();
         return pokemonList.filter(function (pokemon) {
-            return typeof type !== typeof "string" ? (pokemon.type === type ? true : false) : (pokemon.type.includes(type) ? true : false);
+            return pokemon.types.includes(types) ? true : false;
         });
     }
+
+    document.querySelector("#filter").addEventListener("click", function () { // event listener for filterType function
+        let types = window.prompt("What is the type of Pokemons you are looking for:").toLowerCase().split(",");
+        console.log(types);
+        filterType(types) == "" ? alert("We dont have this kind of Pokemon in our Database") :
+            pokemonRepository.filterType(type).forEach(function (element) {
+                return pokemonRepository.addListItem(element)
+            })
+    });
 
     // function that removes a pokemon from the list
     function remove() {
@@ -244,20 +297,9 @@ let pokemonRepository = (function () {
         }
     }
 
-    document.querySelector("#search").addEventListener("click", function () { // I am runing a showDetails function wrapped in function so it runs only after clik and not immediately
-        let pokemon = window.prompt("What is the name of Pokemon you are looking for:").toLowerCase();
-        pokemon = pokemon[0].toUpperCase() + pokemon.slice(1);
-        pokemonRepository.showDetails(pokemonRepository.findPokemon(pokemon ? pokemon : null)[0])
-    });
 
-    document.querySelector("#filter").addEventListener("click", function () { // I am runing a showDetails function wrapped in function so it runs only after clik and not immediately
-        let type = window.prompt("What is the type of Pokemons you are looking for:").toLowerCase();
-        type = type[0].toUpperCase() + type.slice(1);
-        pokemonRepository.filterType(type) == "" ? alert("We dont have this kind of Pokemon in our Database") :
-            pokemonRepository.filterType(type).forEach(function (element) {
-                return pokemonRepository.addListItem(element)
-            })
-    });
+
+
 
     document.querySelector("#add").addEventListener("click", function () {
         modalContainer.classList.add('is-visible');
@@ -270,7 +312,7 @@ let pokemonRepository = (function () {
         remove();
         clearDisplay();
         getAll().forEach(function (pokemon, i) {
-        addListItem(pokemon, i);
+            addListItem(pokemon, i);
         })
     });
 
@@ -315,8 +357,6 @@ let pokemonRepository = (function () {
         loadList: loadList,
         getAll: getAll,
         add: add,
-        biggestPokemon: biggestPokemon,
-        findPokemon: findPokemon,
         addListItem: addListItem,
         showDetails: showDetails,
         filterType: filterType,
