@@ -114,6 +114,8 @@ img {
     background-color: #fff;
     width: 320px;
     height: 455px;
+    overflow-x: scroll;
+    overflow-y: hidden;
 }
 
 .pokemon-list__item {
@@ -214,6 +216,80 @@ img {
 .grass {
     background-color: lightgreen;
 }
+
+.normal {
+    background-color: lightgray;
+}
+
+.fighting {
+    background-color: darkgrey;
+}
+
+.flying {
+    background-color: lightskyblue;
+}
+
+.ground {
+    color: white;
+    background-color: brown;
+}
+
+.rock {
+    background-color: grey;
+}
+
+.bug {
+    background-color: darkkhaki;
+}
+
+.ghost {
+    background-color: purple;
+}
+
+.steel {
+    background-color: steelblue;
+}
+
+.fire {
+    color: white;
+    background-color: firebrick;
+}
+
+.water {
+    color: white;
+    background-color: blue;
+}
+
+.electric {
+    background-color: yellow;
+}
+
+.psychic {
+    background-color: pink;
+}
+
+.ice {
+    background-color: lightblue;
+}
+
+.dragon {
+    background-color: darkred;
+}
+
+.fairy {
+    background-color: yellowgreen;
+}
+
+.shadow {
+    color: white;
+    background-color: black;
+}
+
+.unknown {
+    background-color: white;
+}
+
+
 
 .display>p,
 .description>p {

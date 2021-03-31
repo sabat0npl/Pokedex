@@ -74,7 +74,7 @@ let pokemonRepository = (function () {
         clearDisplay();
         let container = document.querySelector(".display");
         let loadingMessage = document.createElement("h1");
-        loadingMessage.innerText = "The data are being downloaded"
+        loadingMessage.innerText = "loading"
         container.appendChild(loadingMessage);
     }
 
@@ -194,23 +194,6 @@ let pokemonRepository = (function () {
         }
     }
 
-
-    function filterType(types) { // function to filter pokemons by Type
-        clearDisplay();
-        return pokemonList.filter(function (pokemon) {
-            return pokemon.types.includes(types) ? true : false;
-        });
-    }
-
-    document.querySelector("#filter").addEventListener("click", function () { // event listener for filterType function
-        let types = window.prompt("What is the type of Pokemons you are looking for:").toLowerCase().split(",");
-        console.log(types);
-        filterType(types) == "" ? alert("We dont have this kind of Pokemon in our Database") :
-            pokemonRepository.filterType(type).forEach(function (element) {
-                return pokemonRepository.addListItem(element)
-            })
-    });
-
     // function that removes a pokemon from the list
     function remove() {
         return pokemonList = pokemonList.filter(pokemon => pokemon.pokemonIndex !== id)
@@ -261,7 +244,7 @@ let pokemonRepository = (function () {
                 type: types,
                 abilities: abilities
             });
-
+            pokemonListPrint();
         } else {
             const pokemonEdited = edit({
                 pokemonIndex: id,
@@ -333,7 +316,6 @@ let pokemonRepository = (function () {
         add: add,
         addListItem: addListItem,
         showDetails: showDetails,
-        filterType: filterType,
         remove: remove,
     };
 })();
