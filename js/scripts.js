@@ -121,11 +121,11 @@ let pokemonRepository = (function () {
             description.appendChild(abilities);
             let abilitiesDiv = document.createElement("div");
             abilitiesDiv.classList.add("abilities");
-            pokeAbilities.forEach(function (ability) {
-                let abilityP = document.createElement("p");
-                abilityP.innerText = ability;
-                abilitiesDiv.appendChild(abilityP);
-            })
+
+            let abilityP = document.createElement("p");
+            abilityP.innerText = pokeAbilities.join(", ");
+            abilitiesDiv.appendChild(abilityP);
+
             description.appendChild(abilitiesDiv);
             let typeDiv = document.createElement("div");
             typeDiv.classList.add("type");
@@ -140,7 +140,7 @@ let pokemonRepository = (function () {
             // reset html in modal body before adding new data
             modalBody.innerHTML = "";
 
-            modalTitle.innerHTML = `<h1>${pokeName}</h1>` ;
+            modalTitle.innerHTML = `<h1>${pokeName}</h1>`;
             modalImage.setAttribute('src', (`https://pokeres.bastionbot.org/images/pokemon/${pokeIndex}.png`));
             modalImage.setAttribute('width', '200px');
             modalImage.setAttribute('alt', `this is a picture of ${pokeName}`);
