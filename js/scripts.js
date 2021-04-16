@@ -13,7 +13,7 @@ let pokemonRepository = (function () {
                 let items = responseJSON.results;
                 items.forEach(function (item, i) {
                     let pokemon = {
-                        index: i+1,
+                        index: i + 1,
                         name: item.name[0].toUpperCase() + item.name.slice(1),
                         detailsURL: item.url
                     };
@@ -37,8 +37,14 @@ let pokemonRepository = (function () {
                 currentPokemon.index = details.id;
                 currentPokemon.height = details.height;
                 currentPokemon.weight = details.weight;
-                currentPokemon.abilities = details.abilities;
-                currentPokemon.types = details.types;
+                currentPokemon.types = [];
+                details.types.forEach(function (object) {
+                    return currentPokemon.types.push(object.type.name)
+                });
+                currentPokemon.abilities = [];
+                details.abilities.forEach(function (object) {
+                    return currentPokemon.abilities.push(object.ability.name)
+                });
                 hideLoadingMessage(); //code to stop the loading image.
             })
             .catch(function (error) {
@@ -90,31 +96,59 @@ let pokemonRepository = (function () {
         })
     }
 
-    function constructDetailModal(pokeName, pokeHeight, pokeIndex, pokeType) {
+    function constructDetailModal(pokeName, pokeHeight, pokeIndex, pokeType, pokeWeight, pokeAbilities) {
         return new Promise(function (resolve, reject) {
-            let modalBody, modalFooter, modalImage;
-            modalTitle = document.querySelector('.modal-title');
-            modalBody = document.querySelector('.modal-body');
-            modalFooter = document.querySelector('.modal-footer');
-            modalImage = document.createElement('img');
+            let modalTitle = document.querySelector('.modal-title');
+            let modalBody = document.querySelector('.modal-body');
+            let modalFooter = document.querySelector('.modal-footer');
+            let modalImage = document.createElement('img');
             modalImage.classList.add('modal-image');
+            let description = document.createElement("div");
+            description.classList.add("description");
+
+            let size = document.createElement("div");
+            size.classList.add("size");
+            description.appendChild(size);
+            let sizeH = document.createElement("p");
+            sizeH.innerHTML = `Height <span> ${pokeHeight} </span>`;
+            size.appendChild(sizeH);
+            let sizeW = document.createElement("p");
+            sizeW.innerHTML = `Weight <span> ${pokeWeight} </span>`;
+            size.appendChild(sizeW);
+            let abilities = document.createElement("p");
+            abilities.classList.add("description-header");
+            abilities.innerText = "Abilities";
+            description.appendChild(abilities);
+            let abilitiesDiv = document.createElement("div");
+            abilitiesDiv.classList.add("abilities");
+            pokeAbilities.forEach(function (ability) {
+                let abilityP = document.createElement("p");
+                abilityP.innerText = ability;
+                abilitiesDiv.appendChild(abilityP);
+            })
+            description.appendChild(abilitiesDiv);
+            let typeDiv = document.createElement("div");
+            typeDiv.classList.add("type");
+            pokeType.forEach(function (type) {
+                let buttonType = document.createElement("button");
+                buttonType.classList.add(type);
+                buttonType.innerText = type;
+                typeDiv.appendChild(buttonType);
+            })
+
 
             // reset html in modal body before adding new data
             modalBody.innerHTML = "";
 
-            modalTitle.innerText = pokeName;
+            modalTitle.innerHTML = `<h1>${pokeName}</h1>` ;
             modalImage.setAttribute('src', (`https://pokeres.bastionbot.org/images/pokemon/${pokeIndex}.png`));
             modalImage.setAttribute('width', '200px');
             modalImage.setAttribute('alt', `this is a picture of ${pokeName}`);
 
-            modalCopy = document.createElement('p');
-            modalCopy.innerText = `${pokeName} is ${pokeHeight} meter(s) tall with type(s) of ${pokeType}!`
-
-
             // Append details to the modal body
             modalBody.append(modalImage);
-            modalBody.append(modalCopy);
-
+            modalBody.append(description);
+            modalBody.append(typeDiv);
 
             // promise resolve pass the modal container to be handled in the show details function
             resolve('Completed successfully!');
@@ -128,9 +162,10 @@ let pokemonRepository = (function () {
             let pokeName = pokemon.name;
             let pokeHeight = pokemon.height;
             let pokeIndex = pokemon.index;
-            console.log(pokemon);
-            let pokeType = getPokemonTypes(pokemon);
-            constructDetailModal(pokeName, pokeHeight, pokeIndex, pokeType)
+            let pokeWeight = pokemon.weight;
+            let pokeAbilities = pokemon.abilities;
+            let pokeType = pokemon.types;
+            constructDetailModal(pokeName, pokeHeight, pokeIndex, pokeType, pokeWeight, pokeAbilities)
                 .then(function (result) {
                     console.log(result);
                 })
@@ -140,22 +175,6 @@ let pokemonRepository = (function () {
                 })
         });
     }
-
-    function getPokemonTypes(pokemon) {
-        let unparsedTypeList = pokemon.types;
-        let parsedTypeList = [];
-        let pokeTypeString;
-        // The following loop loops through the unparsedTypeList to select and stores each pokemon type for for each pokemon.
-        for (let i = 0; i < unparsedTypeList.length; i++) {
-            let currentItem = unparsedTypeList[i];
-            let currentType = currentItem.type.name;
-            parsedTypeList.push(currentType);
-        }
-        // Parses the pokeTypeList into a string
-        pokeTypeString = parsedTypeList.toString().replace(',', ' and ');
-        return pokeTypeString;
-    }
-
 
     searchInput.addEventListener('input', function () {
         let allPokemon = document.querySelectorAll('.pokemon');
