@@ -5,7 +5,7 @@ A Frontend web application that helps people retrieve information about Pokemons
 
 - **HTML + CSS + JS + JQUERY** - UI
 
-- **GitHub Pages** - Front-End UI Hosting. [Visit The App](https://sabat0npl.github.io/pokedex/)
+- **GitHub Pages** - Front-End UI Hosting. [Visit The App](https://sabat0npl.github.io/Pokedex/)
 ## GETTING STARTED
 
 ### Clone The Project
